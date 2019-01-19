@@ -1,0 +1,91 @@
+//This is the complete code for An ubiquitous smart dumpster 
+//with user interface implemented using sensors and arduino uno
+
+#include<Servo.h>
+#include <LiquidCrystal.h>
+Servo lid;
+Servo bottom;
+const int buzz=13;
+const int ir1=10;
+const int ir2=9;
+const int buttonPin = 8;
+const int servoPin = A3;
+const int led1=A0;
+const int led2=A1;
+const int led3=A2;
+int counter = 0;
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+void setup() {
+  // put your setup code here, to run once:
+lid.attach(A4);
+lid.write(0);
+bottom.attach (servoPin);
+pinMode(buttonPin, INPUT);  
+pinMode(ir1,INPUT);
+pinMode(ir2,INPUT);
+ pinMode(buzz, OUTPUT);
+digitalWrite(buzz,LOW);
+analogWrite(led1,0);
+analogWrite(led2,0);
+analogWrite(led3,0);
+ Serial.begin(9600);
+ noTone(buzz);
+digitalWrite(buzz, LOW);
+ lcd.begin(0, 1);
+/*if(digitalRead(ir1)!=LOW&&digitalRead(ir2)==LOW)
+{*/
+lcd.print("Bin is empty!!!!");
+
+
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+
+if(digitalRead(ir1)==LOW&&digitalRead(ir2)==LOW
+)
+{
+lid.write(90);
+
+lcd.print("Bin 1 is full!!!");
+
+
+digitalWrite(buzz, HIGH);
+
+analogWrite(led1,255);
+analogWrite(led2,255);
+analogWrite(led3,255);
+Serial.println("Bin 1 is full!!!");
+}
+
+else 
+{
+lid.write(0);
+digitalWrite(buzz, LOW);
+analogWrite(led1,0);
+analogWrite(led2,0);
+analogWrite(led3,0);
+//lcd.print("Bin 1 is empty!!!");
+Serial.println("Bin 1 is empty!!!");
+}
+int buttonState;  
+  //read the digital state of buttonPin with digitalRead() function and store the           //value in buttonState variable
+  buttonState = digitalRead(buttonPin);
+  //if the button is pressed increment counter and wait a tiny bit to give us some          //time to release the button
+  if (buttonState == LOW) // light the LED
+  {
+    counter++;
+   // delay(150);
+  }
+ 
+  
+  if(counter == 1)
+  {  
+    bottom.write(90);
+    delay(1500);
+    bottom.write(0);
+    counter=0;
+  }
+  
+
+}
